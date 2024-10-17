@@ -1,4 +1,4 @@
-module github.com/ozonmp/omp-bot
+module github.com/wet_demo_bot
 
 go 1.17
 

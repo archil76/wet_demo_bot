@@ -5,8 +5,9 @@ import (
 	"runtime/debug"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/ozonmp/omp-bot/internal/app/commands/demo"
-	"github.com/ozonmp/omp-bot/internal/app/path"
+	"github.com/wet_demo_bot/internal/app/commands/demo"
+	"github.com/wet_demo_bot/internal/app/commands/product"
+	"github.com/wet_demo_bot/internal/app/path"
 )
 
 type Commander interface {
@@ -44,6 +45,7 @@ type Router struct {
 	// cinema
 	// logistic
 	// product
+	productCommander Commander
 	// education
 }
 
@@ -79,6 +81,7 @@ func NewRouter(
 		// cinema
 		// logistic
 		// product
+		productCommander: product.NewProductCommander(bot),
 		// education
 	}
 }
@@ -155,7 +158,7 @@ func (c *Router) handleCallback(callback *tgbotapi.CallbackQuery) {
 	case "logistic":
 		break
 	case "product":
-		break
+		c.productCommander.HandleCallback(callback, callbackPath)
 	case "education":
 		break
 	default:
@@ -226,7 +229,7 @@ func (c *Router) handleMessage(msg *tgbotapi.Message) {
 	case "logistic":
 		break
 	case "product":
-		break
+		c.productCommander.HandleCommand(msg, commandPath)
 	case "education":
 		break
 	default:
