@@ -1,6 +1,8 @@
 package onec
 
 import (
+	"errors"
+
 	model "github.com/wet_demo_bot/internal/model/product/onec"
 )
 
@@ -12,15 +14,19 @@ type OnecService interface {
 	Remove(onecID uint64) (bool, error)
 }
 
-type Service struct{}
+type DummyOnecService struct{}
 
-func NewService() *Service {
-	return &Service{}
+func NewDummyOnecService() *DummyOnecService {
+	return &DummyOnecService{}
 }
 
-func (s *Service) List(cursor int, limit int) ([]model.Onec, error) {
+func (s *DummyOnecService) Describe(idx uint64) (*model.Onec, error) {
+	return &model.AllEntities[idx], nil
+}
 
-	entitiesLen := len(model.AllEntities) - 1
+func (s *DummyOnecService) List(cursor uint64, limit uint64) ([]model.Onec, error) {
+
+	entitiesLen := uint64(len(model.AllEntities) - 1)
 	if cursor > entitiesLen {
 		return []model.Onec{}, nil
 	}
@@ -36,41 +42,15 @@ func (s *Service) List(cursor int, limit int) ([]model.Onec, error) {
 	return model.AllEntities[cursor:lastIndex], nil
 }
 
-func (s *Service) Get(idx int) (*model.Onec, error) {
-	return &model.AllEntities[idx], nil
-}
-
-func (s *Service) Remove(idx int) (bool, error) {
-	model.AllEntities = append(model.AllEntities[:idx], model.AllEntities[idx+1:]...)
-	return true, nil
-}
-
-type DummyOnecService struct{}
-
-func NewDummyOnecService() *DummyOnecService {
-	return &DummyOnecService{}
-}
-
-func (s *DummyOnecService) List() []model.Onec {
-	return model.AllEntities
-}
-
-func (s *DummyOnecService) Get(idx int) (*model.Onec, error) {
-	return &model.AllEntities[idx], nil
-}
-
-func (s *DummyOnecService) Describe(idx int) (*model.Onec, error) {
-	return s.Get(idx)
-}
-
 func (s *DummyOnecService) Create(onec model.Onec) (uint64, error) {
-	return 0, nil
+	return 0, errors.New("Command Create isn't implemented")
 }
 
-func (s *DummyOnecService) Update(idx int, onec model.Onec) error {
-	return nil
+func (s *DummyOnecService) Update(idx uint64, onec model.Onec) error {
+	return errors.New("Command Update isn't implemented")
 }
 
-func (s *DummyOnecService) Remove(idx int) (bool, error) {
+func (s *DummyOnecService) Remove(idx uint64) (bool, error) {
+	model.AllEntities = append(model.AllEntities[:idx], model.AllEntities[idx+1:]...)
 	return true, nil
 }

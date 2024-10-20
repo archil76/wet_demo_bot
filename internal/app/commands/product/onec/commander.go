@@ -8,19 +8,33 @@ import (
 	service "github.com/wet_demo_bot/internal/service/product/onec"
 )
 
+type OnecCommander interface {
+	Help(inputMsg *tgbotapi.Message)
+	Get(inputMsg *tgbotapi.Message)
+	List(inputMsg *tgbotapi.Message)
+	Delete(inputMsg *tgbotapi.Message)
+
+	New(inputMsg *tgbotapi.Message)  // return error not implemented
+	Edit(inputMsg *tgbotapi.Message) // return error not implemented
+
+	HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath)
+	HandleCommand(msg *tgbotapi.Message, commandPath path.CommandPath)
+}
+
 type ProductOnecCommander struct {
 	bot              *tgbotapi.BotAPI
-	subdomainService *service.Service
+	subdomainService service.OnecService
 }
 
 func NewProductOnecCommander(bot *tgbotapi.BotAPI) *ProductOnecCommander {
 
-	subdomainService := service.NewService()
+	subdomainService := service.NewDummyOnecService()
 
 	return &ProductOnecCommander{
 		bot:              bot,
 		subdomainService: subdomainService,
 	}
+
 }
 
 func (c *ProductOnecCommander) HandleCallback(callback *tgbotapi.CallbackQuery, callbackPath path.CallbackPath) {
@@ -42,21 +56,11 @@ func (c *ProductOnecCommander) HandleCommand(msg *tgbotapi.Message, commandPath 
 		c.Get(msg)
 	case "delete":
 		c.Delete(msg)
+	case "new":
+		c.New(msg)
+	case "edit":
+		c.Edit(msg)
 	default:
 		c.Default(msg)
 	}
-}
-
-type OnecCommander interface {
-	Help(inputMsg *tgbotapi.Message)
-	Get(inputMsg *tgbotapi.Message)
-	List(inputMsg *tgbotapi.Message)
-	Delete(inputMsg *tgbotapi.Message)
-
-	New(inputMsg *tgbotapi.Message)  // return error not implemented
-	Edit(inputMsg *tgbotapi.Message) // return error not implemented
-}
-
-func NewOnecCommander(bot *tgbotapi.BotAPI, service service.OnecService) OnecCommander {
-	return nil
 }

@@ -15,7 +15,7 @@ type Commander interface {
 
 type ProductCommander struct {
 	bot           *tgbotapi.BotAPI
-	onecCommander Commander
+	onecCommander onec.OnecCommander
 }
 
 func NewProductCommander(bot *tgbotapi.BotAPI) *ProductCommander {

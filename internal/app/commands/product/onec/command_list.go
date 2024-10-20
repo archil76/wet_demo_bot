@@ -22,7 +22,7 @@ func (c *ProductOnecCommander) SendMessageWithList(chatID int64, callbackListDat
 
 	outputMsgText := "Here all the products: \n\n"
 
-	products, _ := c.subdomainService.List(callbackListData.Cursor, callbackListData.Limit)
+	products, _ := c.subdomainService.List(uint64(callbackListData.Cursor), uint64(callbackListData.Limit))
 	for _, p := range products {
 		outputMsgText += p.Title
 		outputMsgText += "\n"

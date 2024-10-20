@@ -16,11 +16,12 @@ func (c *ProductOnecCommander) Delete(inputMessage *tgbotapi.Message) {
 		return
 	}
 
-	result, err := c.subdomainService.Remove(idx)
+	result, err := c.subdomainService.Remove(uint64(idx))
 	if err != nil {
 		log.Printf("Fail to delete product with id %d: %v", idx, err)
 		return
 	}
+
 	outputMessage := ""
 	if result {
 		outputMessage = "Product is deleted"
